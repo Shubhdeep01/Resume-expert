@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Analysis Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8">
+        <h1 class="text-3xl font-bold mb-6 text-center">Resume Analysis Report</h1>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- ATS Score Section -->
+            <div class="bg-blue-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-800">ATS Compatibility Score</h2>
+                <div id="ats-score" class="text-center">
+                    <span class="text-4xl font-bold 
+                        {% if ats_score >= 80 %}text-green-600
+                        {% elif ats_score >= 60 %}text-yellow-600
+                        {% else %}text-red-600
+                        {% endif %}">
+                        {{ ats_score }}%
+                    </span>
+                    <p class="mt-2 text-sm">
+                        {% if ats_score >= 80 %}
+                        Excellent! Your resume is highly ATS-friendly.
+                        {% elif ats_score >= 60 %}
+                        Good, but there's room for improvement.
+                        {% else %}
+                        Needs significant improvement for ATS compatibility.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Resume Sections Summary -->
+            <div class="bg-green-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-green-800">Resume Sections Overview</h2>
+                <ul class="space-y-2">
+                    {% for section, content in resume_sections.items() %}
+                    <li>
+                        <span class="font-medium capitalize">{{ section.replace('_', ' ') }}:</span>
+                        <span class="text-sm">
+                            {% if content %}
+                                {% if isinstance(content, list) %}
+                                    {{ content|length }} item(s) found
+                                {% elif isinstance(content, dict) %}
+                                    {{ content|length }} detail(s) captured
+                                {% else %}
+                                    Details present
+                                {% endif %}
+                            {% else %}
+                                <span class="text-red-500">Missing</span>
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Grammar and Spelling Insights -->
+        <div class="mt-8 bg-gray-50 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Grammar and Writing Insights</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Grammar Errors -->
+                <div>
+                    <h3 class="font-medium mb-2">Grammar Errors</h3>
+                    {% if grammar_checks.grammar_errors %}
+                        <ul class="space-y-2 text-sm">
+                            {% for error in grammar_checks.grammar_errors %}
+                            <li class="bg-red-100 p-2 rounded">
+                                <strong>Issue:</strong> {{ error.message }}
+                                <br>
+                                <strong>Suggestion:</strong> 
+                                {{ error.suggestions[0] if error.suggestions else 'No suggestion' }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-green-600">No grammar errors detected!</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Writing Suggestions -->
+                <div>
+                    <h3 class="font-medium mb-2">Writing Improvement Suggestions</h3>
+                    {% if grammar_checks.writing_suggestions %}
+                        <ul class="space-y-2 text-sm">
+                            {% for suggestion in grammar_checks.writing_suggestions %}
+                            <li class="bg-yellow-100 p-2 rounded">
+                                <strong>{{ suggestion.type|title }} Suggestion:</strong> 
+                                {{ suggestion.message }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-green-600">Your writing looks great!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

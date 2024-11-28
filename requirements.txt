@@ -1,0 +1,5 @@
+Flask
+nltk
+spacy
+pdfminer.six
+python-docx

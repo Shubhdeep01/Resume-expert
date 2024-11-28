@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-2xl font-bold mb-6 text-center">Resume Analyzer</h1>
+        
+        <form 
+            id="resume-upload-form"
+            hx-post="/"
+            hx-target="#results"
+            hx-indicator="#loading"
+            enctype="multipart/form-data"
+            class="space-y-4"
+        >
+            <div class="flex flex-col">
+                <label for="resume" class="mb-2 text-sm font-medium">
+                    Upload Resume
+                </label>
+                <input 
+                    type="file" 
+                    name="resume" 
+                    id="resume" 
+                    accept=".pdf,.docx,.doc,.txt"
+                    class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100"
+                    required
+                >
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="job-desc" class="mb-2 text-sm font-medium">
+                    Job Description (Optional)
+                </label>
+                <textarea 
+                    name="job_description" 
+                    id="job-desc"
+                    rows="4"
+                    placeholder="Paste job description for more accurate analysis"
+                    class="border rounded p-2 text-sm"
+                ></textarea>
+            </div>
+            
+            <button 
+                type="submit" 
+                class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+            >
+                Analyze Resume
+            </button>
+        </form>
+        
+        <div 
+            id="loading" 
+            class="htmx-indicator fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center"
+        >
+            <div class="spinner animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+        </div>
+        
+        <div id="results" class="mt-6"></div>
+    </div>
+
+    <script>
+        // Optional: Add client-side validation
+        document.getElementById('resume-upload-form').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('resume');
+            const allowedTypes = ['application/pdf', 'application/msword', 
+                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+                                  'text/plain'];
+            
+            if (!allowedTypes.includes(fileInput.files[0].type)) {
+                e.preventDefault();
+                alert('Please upload a PDF, Word document, or text file.');
+            }
+        });
+    </script>
+</body>
+</html>
